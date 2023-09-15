@@ -25,4 +25,4 @@ def schema_detection(bruker_dot_d_file):
         print(get_timestamp() + ':' + 'detected BAF')
         return 'BAF'
     else:
-      print(get_timestamp() + ':' + 'could not find any .tdf, .tsf or .baf files.)
+      print(get_timestamp() + ':' + 'could not find any .tdf, .tsf or .baf files.')
