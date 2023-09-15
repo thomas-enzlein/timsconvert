@@ -45,6 +45,7 @@ def run_timsconvert(args):
 
     # Convert each sample.
     for infile in input_files:
+        print(get_timestamp() + ': processing' + infile)
         # Reset args.
         run_args = copy.deepcopy(args)
 
