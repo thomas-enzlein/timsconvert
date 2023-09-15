@@ -32,19 +32,11 @@ def arg_descriptions():
                                        'header/index.',
                     'imzml_mode': 'Whether .imzML files should be written in "processed" or "continuous" mode. '
                                   'Defaults to "processed".',
-                    'lcms_backend': 'Choose whether to use "timsconvert" or "tdf2mzml" backend for LC-TIMS-MS/MS data '
-                                    'conversion.',
                     'chunk_size': 'Relative size of chunks of spectral data that are parsed and subsequently written '
                                   'at once. Increasing parses and write more spectra at once but increases RAM usage. '
                                   'Default = 10.',
                     'verbose': 'Boolean flag to determine whether to print logging output.',
-                    'url': 'URL for server to run TIMSCONVERT (if submitting job through API). Default = GNPS server',
-                    'start_frame': 'Start frame.',
-                    'end_frame': 'End frame.',
-                    'precision': 'Precision.',
-                    'ms1_threshold': 'Intensity threshold for MS1 data.',
-                    'ms2_threshold': 'Intensity threshold for MS2 data.',
-                    'ms2_nlargest': 'N Largest MS2.'}
+                    'url': 'URL for server to run TIMSCONVERT (if submitting job through API). Default = GNPS server'}
     return descriptions
 
 
@@ -81,22 +73,11 @@ def get_args(server=False):
 
     # TIMSCONVERT System Arguments
     system = parser.add_argument_group('TIMSCONVERT System Parameters')
-    system.add_argument('--lcms_backend', help=desc['lcms_backend'], default='timsconvert', type=str,
-                        choices=['timsconvert', 'tdf2mzml'])
     system.add_argument('--chunk_size', help=desc['chunk_size'], default=10, type=int)
     system.add_argument('--verbose', help=desc['verbose'], action='store_true')
     if server:
         # change to GNPS URL later
         system.add_argument('--url', help=desc['url'], default='http://localhost:5000', type=str)
-
-    # tdf2mzml Arguments
-    tdf2mzml_args = parser.add_argument_group('tdf2mzml Optional Parameters')
-    tdf2mzml_args.add_argument('--start_frame', help=desc['start_frame'], default=-1, type=int)
-    tdf2mzml_args.add_argument('--end_frame', help=desc['end_frame'], default=-1, type=int)
-    tdf2mzml_args.add_argument('--precision', help=desc['precision'], default=10.0, type=float)
-    tdf2mzml_args.add_argument('--ms1_threshold', help=desc['ms1_threshold'], default=100, type=float)
-    tdf2mzml_args.add_argument('--ms2_threshold', help=desc['ms2_threshold'], default=10, type=float)
-    tdf2mzml_args.add_argument('--ms2_nlargest', help=desc['ms2_nlargest'], default=-1, type=int)
 
     # Return parser
     arguments = parser.parse_args()
@@ -107,8 +88,8 @@ def get_args(server=False):
 def args_check(args):
     # Check if input directory exists.
     if not os.path.exists(args['input']):
-        logging.info(get_timestamp() + ':' + 'Input path does not exist...')
-        logging.info(get_timestamp() + ':' + 'Exiting...')
+        print(get_timestamp() + ':' + 'Input path does not exist...')
+        print(get_timestamp() + ':' + 'Exiting...')
         sys.exit(1)
     # Check if output directory exists and create it if it does not.
     if not os.path.isdir(args['outdir']) and args['outdir'] != '':
@@ -117,21 +98,23 @@ def args_check(args):
     if os.path.splitext(args['outfile']) != '.mzML' and args['outfile'] != '':
         args['outfile'] = args['outfile'] + '.mzML'
     # Check if plate map path is valid and if plate map is available if --maldi_single_file is True.
-    if args['maldi_output_file'] != '' and args['maldi_output_file'] in ['individual', 'sample']:
-        if args['maldi_plate_map'] == '':
-            logging.info(get_timestamp() + ':' + 'Plate map is required for MALDI dried droplet data...')
-            logging.info(get_timestamp() + ':' + 'Exiting...')
-            sys.exit(1)
-        else:
-            if not os.path.exists(args['maldi_plate_map']):
-                logging.info(get_timestamp() + ':' + 'Plate map path does not exist...')
-                logging.info(get_timestamp() + ':' + 'Exiting...')
-                sys.exit(1)
+    if args['maldi_output_file'] != '' \
+            and args['maldi_output_file'] in ['individual', 'sample'] \
+            and args['maldi_plate_map'] == '':
+        print(get_timestamp() + ':' + 'Plate map is required for MALDI dried droplet data...')
+        print(get_timestamp() + ':' + 'Exiting...')
+        sys.exit(1)
+    elif args['maldi_output_file'] != '' \
+            and args['maldi_output_file'] in ['individual', 'sample'] \
+            and not os.path.exists(args['maldi_plate_map']):
+        print(get_timestamp() + ':' + 'Plate map path does not exist...')
+        print(get_timestamp() + ':' + 'Exiting...')
+        sys.exit(1)
     # Check if server URL is valid.
     if 'url' in args.keys():
         response = requests.get(args['url'])
         if response.status_code != 200:
-            logging.info(get_timestamp() + ':' + 'URL is not valid or server is down...')
-            logging.info(get_timestamp() + ':' + 'Exiting...')
+            print(get_timestamp() + ':' + 'URL is not valid or server is down...')
+            print(get_timestamp() + ':' + 'Exiting...')
             response.raise_for_status()
     return args
