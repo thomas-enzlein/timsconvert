@@ -4,6 +4,7 @@ import logging
 
 # Scan directory for Bruker .d files.
 def dot_d_detection(input_directory):
+  print(get_timestamp() + ':' + 'trying to find .d files...')
     return [os.path.join(dirpath, directory) for dirpath, dirnames, filenames in os.walk(input_directory)
             for directory in dirnames if directory.endswith('.d')]
 

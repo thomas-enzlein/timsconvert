@@ -4,6 +4,7 @@ from timsconvert import *
 def run_timsconvert(args):
     # Args check.
     args_check(args)
+    print(get_timestamp() + ':' + 'Args checked, all good!')
     # Check arguments.
     args['version'] = '1.3.1'
 
@@ -28,11 +29,13 @@ def run_timsconvert(args):
         sys.exit(1)
 
     # Initialize Bruker DLL.
+    print(get_timestamp() + ':' + 'Initialize Bruker .dll file...')
     logging.info(get_timestamp() + ':' + 'Initialize Bruker .dll file...')
     tdf_sdk_dll = init_tdf_sdk_dll(TDF_SDK_DLL_FILE_NAME)
     baf2sql_dll = init_baf2sql_dll(BAF2SQL_DLL_FILE_NAME)
 
     # Load in input data.
+    print(get_timestamp() + ':' + 'Loading input data...')
     logging.info(get_timestamp() + ':' + 'Loading input data...')
     if not args['input'].endswith('.d'):
         input_files = dot_d_detection(args['input'])
