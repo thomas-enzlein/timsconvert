@@ -45,7 +45,6 @@ def run_timsconvert(args):
 
     # Convert each sample.
     for infile in input_files:
-        print(get_timestamp() + ': processing' + infile)
         # Reset args.
         run_args = copy.deepcopy(args)
 
@@ -57,6 +56,7 @@ def run_timsconvert(args):
 
         # Read in input file (infile).
         logging.info(get_timestamp() + ':' + 'Reading file: ' + infile)
+        print(get_timestamp() + ':' + 'Reading file: ' + infile)
         schema = schema_detection(infile)
         if schema == 'TSF':
             data = tsf_data(infile, tdf_sdk_dll)
