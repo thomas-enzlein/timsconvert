@@ -1,4 +1,5 @@
 from timsconvert import *
+from timsconvert.timestamp import *
 
 
 def run_timsconvert(args):

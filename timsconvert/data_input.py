@@ -1,5 +1,6 @@
 import os
 import logging
+from timsconvert.timestamp import *
 
 
 # Scan directory for Bruker .d files.
