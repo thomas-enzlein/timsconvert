@@ -7,7 +7,6 @@ RUN pip3 install -r requirements.txt
 RUN pip3 install git+https://github.com/gtluu/pyimzML
 
 RUN mkdir -p /data
-RUN ls -la /
-RUN ls -la /data/*
+RUN ls -la /*
 
 ENTRYPOINT ["python3", "-u", "/app/bin/run.py"]
